@@ -3,6 +3,7 @@ package ui.anwesome.com.doublepiemoveview
 /**
  * Created by anweshmishra on 29/03/18.
  */
+import android.app.Activity
 import android.view.*
 import android.content.*
 import android.graphics.*
@@ -106,6 +107,13 @@ class DoublePieMoveView (ctx : Context) : View(ctx) {
             doublePieMove.startUpdating {
                 animator.stop()
             }
+        }
+    }
+    companion object {
+        fun create(activity : Activity) : DoublePieMoveView {
+            val view = DoublePieMoveView(activity)
+            activity.setContentView(view)
+            return view
         }
     }
 }
