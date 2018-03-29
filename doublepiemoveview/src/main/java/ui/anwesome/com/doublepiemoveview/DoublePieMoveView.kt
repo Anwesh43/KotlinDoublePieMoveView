@@ -73,11 +73,14 @@ class DoublePieMoveView (ctx : Context) : View(ctx) {
             val w = canvas.width.toFloat()
             val h = canvas.height.toFloat()
             val r = Math.min(w, h) / 10
+            paint.strokeWidth = r / 6
             canvas.save()
             canvas.translate(w / 2, h / 2)
             canvas.rotate(90f * state.scales[1])
+            val colors : Array<Int> = arrayOf(Color.parseColor("#9b59b6"), Color.parseColor("#2ecc71"))
             for (i in 0..1) {
-                val cx =  (2 * i - 1)* (w / 2) * (1 - state.scales[0]) + (h / 2 - r) * state.scales[2]
+                paint.color = colors[i]
+                val cx =  (2 * i - 1)* ((w / 2 + r/6) * (1 - state.scales[0]) + (h / 2 + r/6)* state.scales[2])
                 canvas.drawArc(RectF(cx - r, -r, cx + r, r), 90f * (1 - 2 * i), 180f, false, paint)
             }
             canvas.restore()
@@ -95,7 +98,8 @@ class DoublePieMoveView (ctx : Context) : View(ctx) {
         val animator : Animator = Animator(view)
         fun render (canvas : Canvas, paint : Paint) {
             canvas.drawColor(Color.parseColor("#212121"))
-            paint.color = Color.parseColor("#9b59b6")
+            paint.style = Paint.Style.STROKE
+            paint.strokeCap = Paint.Cap.ROUND
             doublePieMove.draw(canvas, paint)
             animator.animate {
                 doublePieMove.update {
@@ -105,7 +109,7 @@ class DoublePieMoveView (ctx : Context) : View(ctx) {
         }
         fun handleTap() {
             doublePieMove.startUpdating {
-                animator.stop()
+                animator.start()
             }
         }
     }
