@@ -66,4 +66,23 @@ class DoublePieMoveView (ctx : Context) : View(ctx) {
             }
         }
     }
+    data class DoublePieMove(var i : Int, val state : State = State()) {
+        fun draw (canvas : Canvas, paint : Paint) {
+            val w = canvas.width.toFloat()
+            val h = canvas.height.toFloat()
+            val r = Math.min(w, h) / 10
+            canvas.save()
+            canvas.translate(w / 2, h / 2)
+            canvas.rotate(90f * state.scales[1])
+            val cx =  (2 * i - 1)* (w / 2) * (1 - state.scales[0]) + (h / 2 - r) * state.scales[2]
+            canvas.drawArc(RectF(cx - r, -r, cx + r, r), 90f * (1 - 2 * i), 180f, false, paint)
+            canvas.restore()
+        }
+        fun update(stopcb : (Float) -> Unit) {
+            state.update(stopcb)
+        }
+        fun startUpdating(startcb : () -> Unit) {
+            state.startUpdating(startcb)
+        }
+    }
 }
