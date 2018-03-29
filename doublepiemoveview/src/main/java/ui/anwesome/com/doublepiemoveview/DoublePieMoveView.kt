@@ -74,15 +74,37 @@ class DoublePieMoveView (ctx : Context) : View(ctx) {
             canvas.save()
             canvas.translate(w / 2, h / 2)
             canvas.rotate(90f * state.scales[1])
-            val cx =  (2 * i - 1)* (w / 2) * (1 - state.scales[0]) + (h / 2 - r) * state.scales[2]
-            canvas.drawArc(RectF(cx - r, -r, cx + r, r), 90f * (1 - 2 * i), 180f, false, paint)
+            for (i in 0..1) {
+                val cx =  (2 * i - 1)* (w / 2) * (1 - state.scales[0]) + (h / 2 - r) * state.scales[2]
+                canvas.drawArc(RectF(cx - r, -r, cx + r, r), 90f * (1 - 2 * i), 180f, false, paint)
+            }
             canvas.restore()
+
         }
         fun update(stopcb : (Float) -> Unit) {
             state.update(stopcb)
         }
         fun startUpdating(startcb : () -> Unit) {
             state.startUpdating(startcb)
+        }
+    }
+    data class Renderer (var view : DoublePieMoveView) {
+        val doublePieMove : DoublePieMove = DoublePieMove(0)
+        val animator : Animator = Animator(view)
+        fun render (canvas : Canvas, paint : Paint) {
+            canvas.drawColor(Color.parseColor("#212121"))
+            paint.color = Color.parseColor("#9b59b6")
+            doublePieMove.draw(canvas, paint)
+            animator.animate {
+                doublePieMove.update {
+                    animator.stop()
+                }
+            }
+        }
+        fun handleTap() {
+            doublePieMove.startUpdating {
+                animator.stop()
+            }
         }
     }
 }
